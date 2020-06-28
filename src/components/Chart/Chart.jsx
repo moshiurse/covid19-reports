@@ -4,7 +4,7 @@ import { Line, Bar } from 'react-chartjs-2';
 
 import styles from './Chart.module.css';
 
-const Charts = ({data: {confirmed, recovered, deaths}, country}) => {
+const Charts = ({data: {confirmed, recovered, deaths}, country, postData, type}) => {
     const [ dailyData, setDailyData ] = useState([]);   
 
     useEffect(() => {
@@ -25,6 +25,32 @@ const Charts = ({data: {confirmed, recovered, deaths}, country}) => {
                     fill: true
                 }, {
                     data: dailyData.map(({deaths}) => deaths),
+                    label: 'Deaths',
+                    borderColor: 'red',
+                    backgroundColor: 'rgba(255,0,0,0.5)',
+                    fill: true
+                }]
+            }} />) : null
+                
+    );
+
+    const lineChartCountry = (
+        postData.length !== 0 ? (
+            <Line data={{
+                labels: postData.map(({date}) => date),
+                datasets: [{
+                    data: postData.map(({confirmed}) => confirmed),
+                    label: 'Infected',
+                    borderColor: '#3333ff',
+                    fill: true
+                }, {
+                    data: postData.map(({recovered}) => recovered),
+                    label: 'Recovered',
+                    borderColor: 'green',
+                    backgroundColor: 'rgba(0,255,0,0.5)',
+                    fill: true
+                }, {
+                    data: postData.map(({deaths}) => deaths),
                     label: 'Deaths',
                     borderColor: 'red',
                     backgroundColor: 'rgba(255,0,0,0.5)',
@@ -60,7 +86,8 @@ const Charts = ({data: {confirmed, recovered, deaths}, country}) => {
 
     return (
         <div className={styles.container}>
-            {country ? barChart : lineChart}
+            {type === "postman" ? lineChartCountry : country ? barChart: lineChart}
+            {/* {country ? barChart : lineChart} */}
         </div>
     );
 }

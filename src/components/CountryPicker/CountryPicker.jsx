@@ -4,7 +4,8 @@ import { fetchCountries } from '../../api';
 
 import styles from './CountryPicker.module.css';
 
-const CountryPicker = ({change}) => {
+const CountryPicker = (props) => {
+    const {change, type, data} = props;
     const [fetchedCountries, setFetchedCountries] = useState([]);
 
     useEffect(() => {
@@ -13,13 +14,25 @@ const CountryPicker = ({change}) => {
         }
 
         fetchCountriesApi();
-    }, [setFetchedCountries]);
-    return (
-        <FormControl className={styles.formControl}>
-            <NativeSelect defaultValue="" onChange={(e) => change(e.target.value)}>
+    }, []);
+
+    const nativeSelect = (
+        type === "postman" ?
+        (<NativeSelect defaultValue="" onChange={(e) => change(e.target.value)}>
+                <option value="">Global</option>
+                {data.map((country,i) => <option key={i} value={country.Slug}>{country.Country}</option>)}
+        </NativeSelect>)
+        : 
+        (
+        <NativeSelect defaultValue="" onChange={(e) => change(e.target.value)}>
                 <option value="">Global</option>
                 {fetchedCountries.map((country,i) => <option key={i} value={country}>{country}</option>)}
-            </NativeSelect>
+        </NativeSelect>)
+        );
+    return (
+        <FormControl className={styles.formControl}>
+            
+            {nativeSelect}
         </FormControl>
     );
 }
